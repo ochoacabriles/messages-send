@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
-const { email, pass } = require('./config/environment');
+const { email, pass } = require('../config/environment');
 
-const sendMail = async (to, body) => {
+module.exports.sendMail = async (to, body) => {
   const transporter = nodemailer.createTransport({
     host: process.env.HOST,
     port: 587,
@@ -34,5 +34,3 @@ const sendMail = async (to, body) => {
   }
 
 };
-
-module.exports = sendMail;

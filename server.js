@@ -1,30 +1,18 @@
 const express = require('express');
 const { randomBytes } = require('crypto');
-const sendMessage = require('./sendMessage');
-const sendMail = require('./sendEmail');
+
 const { port } = require('./config/environment');
+const { handleMessagesEndpoints } = require('./helpers/handleMessageEndpoints');
+const { sendMail } = require('./helpers/sendEmail');
 
 const app = express();
 
-const handleResponse = (result, res) => {
-  if (result.result === 'success') {
-    res.send(`Code sent!!! Message id is ${result.messageId}`);
-  } else {
-    res.status(500).send(`Failed to send code, reason: ${result.message}`);
-  }
-};
-
 app.get('/sms', async (req, res) => {
-  const number = req.query.number;
+  handleMessagesEndpoints('sms', req, res);
+});
 
-  if (!number || number.length !== 10) {
-    res.status(500).send('10 digit number is required');
-    return;
-  }
-
-  const result = await sendMessage(number, randomBytes(8).toString('hex'));
-
-  handleResponse(result, res);
+app.get('/whatsapp', async (req, res) => {
+  handleMessagesEndpoints('whatsapp', req, res);
 });
 
 app.get('/email', async (req, res) => {

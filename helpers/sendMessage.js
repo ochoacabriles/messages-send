@@ -1,13 +1,16 @@
 const twilio = require('twilio');
-const { accountSid, authToken, number } = require('./config/environment');
+const { accountSid, authToken, number, whatsappNumber } = require('../config/environment');
 
-const sendMessage = async (to, body) => {
+module.exports.sendMessage = async (to, body, sendToWhatsapp) => {
   try {
+    const from = sendToWhatsapp ? whatsappNumber : number;
+    const sendTo = sendToWhatsapp ? `whatsapp:+${to}` : `+${to}`;
+
     const client = twilio(accountSid, authToken);
     const message = await client.messages.create({
       body,
-      from: number,
-      to: `+52${to}`,
+      from,
+      to : sendTo,
     });
   
     return {
@@ -21,5 +24,3 @@ const sendMessage = async (to, body) => {
     }
   }
 };
-
-module.exports = sendMessage;

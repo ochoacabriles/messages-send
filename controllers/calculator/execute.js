@@ -1,4 +1,5 @@
 const { add, subtract, multiply, divide } = require('ch-calculator-example');
+const { save } = require('../../dataAccess/calculator');
 
 const operations = {};
 operations.add = (a, b) => add(Number(a), Number(b));
@@ -32,9 +33,13 @@ module.exports.execute = (operation, aAsString, bAsString) => {
     };
   }
 
-  // If operation is "add", execute[operation]() is equivalent to execute.add()
+  // If operation is "add", operations[operation]() is equivalent to operations.add()
+  const result = operations[operation](a, b);
+
+  save(operation, a, b, result);
+
   return {
     success: true,
-    result: operations[operation](a, b),
+    result,
   };
 }
